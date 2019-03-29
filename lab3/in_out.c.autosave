@@ -6,7 +6,6 @@ double f(double x, double y)
     return x * x + y * y;
 }
 
-
 void input(int *nx, int *ny, double *x, double *y)
 {
     printf("Input NX: ");

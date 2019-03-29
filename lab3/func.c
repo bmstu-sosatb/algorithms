@@ -3,6 +3,132 @@
 #include <stdlib.h>
 //#include <stdio.h>
 
+
+// выбор значений из таблицы xarr,yarr,n  в массивы xchosen, ychosen для степени power и значения х
+int choose(double *xarr, double *yarr, int n, double x, int power, double *xchosen, double *ychosen)
+{
+    if (x < xarr[0])
+    {
+        for (int i = 0; i <= power; i++)
+        {
+            xchosen[i] = xarr[i];
+            ychosen[i] = yarr[i];
+        }
+        return EXTRP;
+    }
+    if (x > xarr[n - 1])
+    {
+        for (int i = power; i >= 0; i--)
+        {
+            xchosen[i] = xarr[n - (power - i) - 1];
+            ychosen[i] = yarr[n - (power - i) - 1];
+        }
+        return EXTRP;
+    }
+    int place;
+    for (int i = 0; i < n - 1; i++)
+        if (xarr[i] <= x && x <= xarr[i + 1])
+            place = i;
+    int from, to;
+    if (power % 2 == 0)
+    {
+        from = place - power / 2;
+        to = place + power / 2;
+    }
+    else
+    {
+        from = place - power / 2;
+        to = place + power / 2 + 1;
+    }
+    if (from < 0)
+    {
+        to -= from;
+        from = 0;
+    }
+    if (to > n - 1)
+    {
+        from -= (to - (n - 1));
+        to = n - 1;
+    }
+    int k = 0;
+    for (int i = from; i <= to; i++, k++)
+    {
+        xchosen[k] = xarr[i];
+        ychosen[k] = yarr[i];
+    }
+    return NOTEXTRP;
+}
+
+// создает таблицу разделенных разностей
+int razn_count(double **razn_table, int power, double *xchosen)
+{
+    double *buf = NULL;
+    for (int i = 1; i <= power; i++)
+    {
+        int n = power - i + 1;
+        buf = malloc(n * sizeof(double));
+        if (!buf)
+            return ERR_MEM;
+        razn_table[i] = buf;
+        buf = NULL;
+        double d = xchosen[0] - xchosen[i];
+        for (int j = 0; j < n; j++)
+        {
+            razn_table[i][j] = (razn_table[i - 1][j] - razn_table[i - 1][j + 1]) / d;
+           // printf("%lf\n", razn_table[i][j]);      //
+        }
+    }
+    return OK;
+}
+
+// печать коэффициентов
+void print_koef(double **razn_table, int power)
+{
+    printf("Razdelennye raznosti:\n");
+    for (int i = 0; i <= power; i++)
+    {
+        for (int j = 0; j <= power - i; j++)
+            printf("%lf ", razn_table[i][j]);
+        printf("\n");
+    }
+}
+
+// считается полином
+double count_result(double **razn_table, double *xchosen, int power, double x)
+{
+    double xpart = 1;
+    double y = razn_table[0][0];
+    for (int i = 1; i <= power; i++)
+    {
+        xpart *= (x - xchosen[i - 1]);
+        y += (xpart * razn_table[i][0]);
+    }
+    return y;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int search_place(double *row, int len, double search, int *left, int *right)
 {
     int mid;

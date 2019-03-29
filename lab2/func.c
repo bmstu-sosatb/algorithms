@@ -81,6 +81,8 @@ int process(int n, double *xarr, double *yarr, double x)
     double a[n], d[n], b[n];
     U[n] = 0;
     U[0] = 0;
+    ksi[2] = 0;
+    eta[2] = 0;
     create_h(n, harr, xarr);
     create_A(n, Aarr, harr);
     create_B(n, Barr, harr);
@@ -109,9 +111,9 @@ int process(int n, double *xarr, double *yarr, double x)
     {
         U[i] = ksi[i + 1] * U[i + 1] + eta[i + 1];
     }
-    //printf("ksi and eta are\n");
-    //print_array(ksi, n);
-    //print_array(eta, n);
+//    printf("ksi and eta\n");
+//    print_array(ksi, n);
+//    print_array(eta, n);
 
     for (int i = 1; i < n; i++)
     {
@@ -127,11 +129,11 @@ int process(int n, double *xarr, double *yarr, double x)
     {
         b[i] = (yarr[i] - yarr[i - 1])/ harr[i] - (harr[i] * (U[i + 1] + 2 * U[i])) / 3;
     }
-    //printf("a[i], d[i], b[i], c[i] are\n");
-    //print_array(a, n);
-    //print_array(d, n);
-    //print_array(b, n);
-    //print_array(U, n);
+//    printf("a[i], d[i], b[i], c[i]\n");
+//    print_array(a, n);
+//    print_array(d, n);
+//    print_array(b, n);
+//    print_array(U, n);
     int i = find_xplace(x, xarr, n);
     //printf("pos is %d\n", i );
     double x_xi = (x - xarr[i - 1]);

@@ -2,16 +2,16 @@
 #define DEFINES_H
 
 #define OK 0
-#define ERR_PARAM -1
-#define ERR_IO -2
-#define ERR_MEM -3
-#define ERR_FILE -4
-#define LACK_OF_DATA -5
-#define DIV0 -6
+#define ERR_PARAM 1
+#define ERR_IO 2
+#define ERR_MEM 3
+#define ERR_FILE 4
+#define LACK_OF_DATA 5
+#define DIV0 6
 
 
-#define EXTRP  1
-#define FOUND 10
+#define EXTRP  -1
+#define FOUND -2
 
 
 #include <math.h>
@@ -24,8 +24,8 @@ typedef struct table
     double **z;
     double *x;
     double *y;
-    int xn;
-    int xy;
+    int nx;
+    int ny;
 } table_t;
 
 

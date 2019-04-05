@@ -1,13 +1,14 @@
 #include <stdlib.h>
-#include "allocate.h"
+#include <stdio.h>
+#include "in_out.h"
 
-double f(double x, double y)
+
+double func(double x, double y)
 {
     return x * x + y * y;
 }
 
-
-void input(int *nx, int *ny, double *x, double *y)
+int input(int *nx, int *ny, double *x, double *y, table_t data)
 {
     printf("Input NX: ");
     while (scanf("%d", nx) != 1 || *nx < 0)
@@ -21,6 +22,11 @@ void input(int *nx, int *ny, double *x, double *y)
         printf("NY must be int(ny >= 0)! Try again: ");
         fflush(stdin);
     }
+    if (*nx > data.nx || *ny > data.ny)
+    {
+        printf("Lack of data!\n");
+        return LACK_OF_DATA;
+    }
     printf("Input X: ");
     while (scanf("%lf", x) != 1)
     {
@@ -33,29 +39,32 @@ void input(int *nx, int *ny, double *x, double *y)
         printf("Y must be double! Try again: ");
         fflush(stdin);
     }
+    return OK;
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void info(void)
+void create_file(double fromx, double tox, double stepx, double fromy, double toy, double stepy)
 {
-    printf("<app.exe input.txt>\n");
+    FILE *f = fopen("in.txt", "w");
+    int nx = (tox - fromx) / stepx;
+    int ny = (toy - fromy) / stepy;
+    double y = fromy;
+    fprintf(f, "%d %d\n", nx, ny);
+    for (int i = 0; i < nx; i++)
+    {
+        for (int j = 0; j < ny; j++)
+        {
+            fprintf(f, "%lf %lf %lf\n", fromx, y, func(fromx, y));
+            y += stepy;
+        }
+        y = fromy;
+        fromx += stepx;
+    }
+    fclose(f);
 }
 
+
+// ввод данных из файла
 int read_file(FILE *f, table_t *data)
 {
     int rc = OK;
@@ -69,7 +78,7 @@ int read_file(FILE *f, table_t *data)
 
     if (fscanf(f, "%d %d", &n, &m) == 2 && n > 0 && m > 0)
     {
-        buf = allocate(n, m);
+        buf = allocate_matrix(n, m);
         x = calloc(n, sizeof(double));
         y = calloc(m, sizeof(double));
         if (buf && x && y)
@@ -94,14 +103,14 @@ int read_file(FILE *f, table_t *data)
                 data->x = x;
                 data->y = y;
                 data->z = buf;
-                data->xn = n;
-                data->xy = m;
+                data->nx = n;
+                data->ny = m;
             }
             else
             {
                 free(x);
                 free(y);
-                free_matrix(buf, n);
+                free_matrix(buf);
             }
         }
         else
@@ -112,18 +121,19 @@ int read_file(FILE *f, table_t *data)
     return rc;
 }
 
-void print_data(table_t data)
+// вывод таблицы на экран
+void print_table(table_t data)
 {
     printf("%9s ", "x\\y| ");
-    for (int i = 0; i < data.xy; i++)
+    for (int i = 0; i < data.ny; i++)
         printf("%7.3lf ", (data.y)[i]);
     printf("\n");
-    for (int i = 0; i < data.xy * 3; i++)
+    for (int i = 0; i < data.ny * 3; i++)
         printf(" - ");
     printf("\n");
-    for (int i = 0; i < data.xn; i++)
+    for (int i = 0; i < data.nx; i++)
     {
-        for (int j = 0; j < data.xy; j++)
+        for (int j = 0; j < data.ny; j++)
         {
             if (j == 0)
                 printf("%7.3lf| ", (data.x)[i]);
@@ -131,12 +141,13 @@ void print_data(table_t data)
         }
         printf("\n");
     }
+    printf("\n");
 }
 
-
-double **allocate(int n, int m)
+// выделение памяти под матрицу
+double **allocate_matrix(int n, int m)
 {
-    double **matrix = malloc((n + 1) * sizeof(double *));
+    double **matrix = malloc(n * sizeof(double *));
     if (matrix)
     {
         double *data = calloc(n * m, sizeof(double));
@@ -144,7 +155,6 @@ double **allocate(int n, int m)
         {
             for (int i = 0; i < n; i++)
                 matrix[i] = data + i * m;
-            matrix[n] = data;
         }
         else
         {
@@ -155,8 +165,8 @@ double **allocate(int n, int m)
     return matrix;
 }
 
-void free_matrix(double **mtr, int n)
+void free_matrix(double **matrix)
 {
-    free(mtr[n]);
-    free(mtr);
+    free(matrix[0]);
+    free(matrix);
 }

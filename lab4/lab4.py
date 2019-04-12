@@ -78,13 +78,13 @@ def print_table(table):
     for row in table:
         print('%9.3f|%9.3f|%9.3f' % (row['x'], row['y'], row['p']))
 
-filename = 'in.txt'
+filename = 'rand.txt'
 table = input_points(filename)
 print_table(table)
 n = int(input('Введите n: '))
 matrix, right_part = form_matrix(table, n)
 a = solve(matrix, right_part)
-print(a)
+##print(a)
 draw(table, a, n)
         
         

@@ -14,7 +14,8 @@ double fT(double T0, double Tw, int m, double z)
 
 void form_nt_array(double *nt_array, double T0, double Tw, int m, double P)
 {
-    double step = 1 / N;
+    double step;
+    step = 1.0 / N;
 
     for (int i = 0; i < N + 1; i++)
     {
@@ -26,12 +27,12 @@ void form_nt_array(double *nt_array, double T0, double Tw, int m, double P)
 double integral(double *nt_array)
 {
     double f1, f2;
-    double step = 1 / N;
+    double step = 1.0 / N;
     double intg = 0;
-    f1 = nt_array[0] * pow(10, -18) * 0 * step;
+    f1 = 0;
     for (int i = 1; i < N + 1; i++)
     {
-        f2 = nt_array[i] * pow(10, -18) * i * step;
+        f2 = nt_array[i] * i * step;
         intg += (f1 + f2) * step / 2;
         f1 = f2;
     }

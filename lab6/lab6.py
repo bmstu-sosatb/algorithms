@@ -87,7 +87,7 @@ def print_table(points, n, table):
                                                                  'центральная','2-ая ф-ла Рунге','выравнивающие переменные',\
                                                                  'точное значение'))
     for i in range(n):
-        print('-'*150)
+        print('-'*131)
         print("{:10}|{:10.4f}".format(points[i]['x'],points[i]['y']),end = '|')
         if table[0][i] == '-':
             print("{:13}".format('-'),end = '|')

@@ -1,3 +1,5 @@
+proc.h
+proc.c
 defines.h
 func.c
 func.h
